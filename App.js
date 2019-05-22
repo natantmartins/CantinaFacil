@@ -18,54 +18,54 @@ import Collapsible from 'react-native-collapsible';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { whileStatement } from '@babel/types';
 
-const produtos =[{id: 35, nome: 'Cheeseburguer', categoria: 'Salgados', preco: '6'},
-{id: 36, nome: 'Hamburguer', categoria: 'Salgados', preco: '5'},
-{id: 37, nome: 'Mini pizza', categoria: 'Salgados', preco: '5'},
-{id: 38, nome: 'Pão de queijo', categoria: 'Salgados', preco: '2.5'},
-{id: 39, nome: 'Pipoca Salgada', categoria: 'Salgados', preco: '2.5'},
-{id: 40, nome: 'Queijo quente', categoria: 'Salgados', preco: '5'},
-{id: 41, nome: 'Salgados', categoria: 'Salgados', preco: '4.5'},
+const produtos =[{id: 35, nome: 'Cheeseburguer', categoria: 'Salgados', preco: '6', enabled:true},
+{id: 36, nome: 'Hamburguer', categoria: 'Salgados', preco: '5', enabled:true},
+{id: 37, nome: 'Mini pizza', categoria: 'Salgados', preco: '5', enabled:true},
+{id: 38, nome: 'Pão de queijo', categoria: 'Salgados', preco: '2.5', enabled:true},
+{id: 39, nome: 'Pipoca Salgada', categoria: 'Salgados', preco: '2.5', enabled:true},
+{id: 40, nome: 'Queijo quente', categoria: 'Salgados', preco: '5', enabled:true},
+{id: 41, nome: 'Salgados', categoria: 'Salgados', preco: '4.5', enabled:true},
 ]
-const produtosBebidas =[{id: 8, nome: 'guaravita', categoria: 'Bebidas', preco: '1.5'},
-{id: 9, nome: 'H20!', categoria: 'Bebidas', preco: '4.5'},
-{id: 10, nome: 'Mate Leão', categoria: 'Bebidas', preco: '4'},
-{id: 11, nome: 'Refrigerante garrafinha', categoria: 'Bebidas', preco: '3'},
-{id: 12, nome: 'Refrigerante Lata', categoria: 'Bebidas', preco: '4.5'},
-{id: 13, nome: 'suco', categoria: 'Bebidas', preco: '2'},
-{id: 14, nome: 'Toddynho', categoria: 'Bebidas', preco: '2.5'},
+const produtosBebidas =[{id: 8, nome: 'guaravita', categoria: 'Bebidas', preco: '1.5', enabled:true},
+{id: 9, nome: 'H20!', categoria: 'Bebidas', preco: '4.5', enabled:true},
+{id: 10, nome: 'Mate Leão', categoria: 'Bebidas', preco: '4', enabled:true},
+{id: 11, nome: 'Refrigerante garrafinha', categoria: 'Bebidas', preco: '3', enabled:true},
+{id: 12, nome: 'Refrigerante Lata', categoria: 'Bebidas', preco: '4.5', enabled:true},
+{id: 13, nome: 'suco', categoria: 'Bebidas', preco: '2', enabled:true},
+{id: 14, nome: 'Toddynho', categoria: 'Bebidas', preco: '2.5', enabled:true},
 ]
-const produtosBiscoitos =[{id: 15, nome: 'Look', categoria: 'Biscoitos', preco: '2.5'},
-{id: 16, nome: 'Polvilho', categoria: 'Biscoitos', preco: '1.5'},
-{id: 17, nome: 'Salgadinho', categoria: 'Biscoitos', preco: '4'},
-{id: 18, nome: 'Torcida', categoria: 'Biscoitos', preco: '2'},
-{id: 19, nome: 'Trakinas', categoria: 'Biscoitos', preco: '2.5'},
+const produtosBiscoitos =[{id: 15, nome: 'Look', categoria: 'Biscoitos', preco: '2.5', enabled:true},
+{id: 16, nome: 'Polvilho', categoria: 'Biscoitos', preco: '1.5', enabled:true},
+{id: 17, nome: 'Salgadinho', categoria: 'Biscoitos', preco: '4', enabled:true},
+{id: 18, nome: 'Torcida', categoria: 'Biscoitos', preco: '2', enabled:true},
+{id: 19, nome: 'Trakinas', categoria: 'Biscoitos', preco: '2.5', enabled:true},
 ]
-const produtosChocolates =[{id: 20, nome: 'Batom', categoria: 'Chocolates', preco: '1'},
-{id: 21, nome: 'Bombom', categoria: 'Chocolates', preco: '1'},
-{id: 22, nome: 'Chokito', categoria: 'Chocolates', preco: '2'},
-{id: 23, nome: 'Diamante Negro', categoria: 'Chocolates', preco: '2'},
-{id: 24, nome: 'Galak', categoria: 'Chocolates', preco: '2'},
-{id: 25, nome: 'Maxi Chocolate', categoria: 'Chocolates', preco: '0.6'},
-{id: 26, nome: 'Trento', categoria: 'Chocolates', preco: '1.5'},
-{id: 27, nome: 'Trio Light', categoria: 'Chocolates', preco: '1.5'},
+const produtosChocolates =[{id: 20, nome: 'Batom', categoria: 'Chocolates', preco: '1', enabled:true},
+{id: 21, nome: 'Bombom', categoria: 'Chocolates', preco: '1', enabled:true},
+{id: 22, nome: 'Chokito', categoria: 'Chocolates', preco: '2', enabled:true},
+{id: 23, nome: 'Diamante Negro', categoria: 'Chocolates', preco: '2', enabled:true},
+{id: 24, nome: 'Galak', categoria: 'Chocolates', preco: '2', enabled:true},
+{id: 25, nome: 'Maxi Chocolate', categoria: 'Chocolates', preco: '0.6', enabled:true},
+{id: 26, nome: 'Trento', categoria: 'Chocolates', preco: '1.5', enabled:true},
+{id: 27, nome: 'Trio Light', categoria: 'Chocolates', preco: '1.5', enabled:true},
 ]
-const produtosDoces =[{id: 28, nome: 'Açai', categoria: 'Doces', preco: '3.5'},
-{id: 29, nome: 'Amendoim', categoria: 'Doces', preco: '1'},
-{id: 30, nome: 'Bananada', categoria: 'Doces', preco: '0.5'},
-{id: 31, nome: 'Paçoca', categoria: 'Doces', preco: '0.5'},
-{id: 32, nome: 'Pingo de leite', categoria: 'Doces', preco: '0.5'},
-{id: 33, nome: 'Pipoca Doce', categoria: 'Doces', preco: '4'},
-{id: 34, nome: 'Torrone', categoria: 'Doces', preco: '1'},
+const produtosDoces =[{id: 28, nome: 'Açai', categoria: 'Doces', preco: '3.5', enabled:true},
+{id: 29, nome: 'Amendoim', categoria: 'Doces', preco: '1', enabled:true},
+{id: 30, nome: 'Bananada', categoria: 'Doces', preco: '0.5', enabled:true},
+{id: 31, nome: 'Paçoca', categoria: 'Doces', preco: '0.5', enabled:true},
+{id: 32, nome: 'Pingo de leite', categoria: 'Doces', preco: '0.5', enabled:true},
+{id: 33, nome: 'Pipoca Doce', categoria: 'Doces', preco: '4', enabled:true},
+{id: 34, nome: 'Torrone', categoria: 'Doces', preco: '1', enabled:true},
 ]
 const produtosBalas =[
-{id: 0, nome: 'Bala', categoria: 'Balas', preco: '0.2'},
-{id: 1, nome: 'Bala Garoto menta', categoria: 'Balas', preco: '1'},
-{id: 2, nome: 'Fini', categoria: 'Balas', preco: '1'},
-{id: 3, nome: 'Halls', categoria: 'Balas', preco: '1.3'},
-{id: 4, nome: 'Jujuba', categoria: 'Balas', preco: '0.5'},
-{id: 5, nome: 'Mentos', categoria: 'Balas', preco: '1.5'},
-{id: 6, nome: 'Pirulito', categoria: 'Balas', preco: '0.5'},
-{id: 7, nome: 'Tic Tac', categoria: 'Balas', preco: '2'},
+{id: 0, nome: 'Bala', categoria: 'Balas', preco: '0.2', enabled:true},
+{id: 1, nome: 'Bala Garoto menta', categoria: 'Balas', preco: '1', enabled:true},
+{id: 2, nome: 'Fini', categoria: 'Balas', preco: '1', enabled:true},
+{id: 3, nome: 'Halls', categoria: 'Balas', preco: '1.3', enabled:true},
+{id: 4, nome: 'Jujuba', categoria: 'Balas', preco: '0.5', enabled:true},
+{id: 5, nome: 'Mentos', categoria: 'Balas', preco: '1.5', enabled:true},
+{id: 6, nome: 'Pirulito', categoria: 'Balas', preco: '0.5', enabled:true},
+{id: 7, nome: 'Tic Tac', categoria: 'Balas', preco: '2', enabled:true},
 ]
 function roundN(num,n){
   return parseFloat(Math.round(num * Math.pow(10, n)) /Math.pow(10,n)).toFixed(n);
@@ -172,8 +172,8 @@ class ProdutosScreen extends React.Component{
       colapsadoBebidas: false,
       colapsadoBiscoitos: false,
       cartDataSource: ds.cloneWithRows([]),
-      fichasDataSource: ds.cloneWithRows([]),
-    }
+      fichasDataSource: ds.cloneWithRows([])
+    };
     this.renderRow= this.renderRow.bind(this);
     this.docesRenderRow= this.renderRow.bind(this);
     this.biscoitosRenderRow= this.renderRow.bind(this);
@@ -184,7 +184,6 @@ class ProdutosScreen extends React.Component{
     this.adicionarCart = this.adicionarCart.bind(this)
     this.removerCart = this.removerCart.bind(this)
   }
-  
   removerCart(index){
     if(cart[index].qntd>1){
       
@@ -339,10 +338,27 @@ class ProdutosScreen extends React.Component{
   renderRow(produtossalga) {
     
     return(
-      <TouchableOpacity style={styles.botaoProduto}
+      <TouchableOpacity
+      style={produtossalga.enabled ? styles.botaoProduto : styles.botaoProdutoDesabilitado }
         onPress={()=>{
-        this.adicionarCart(produtossalga)
-      }}>
+          if(produtossalga.enabled){
+            this.adicionarCart(produtossalga);
+            //alert("adiciona ne")
+          }else{
+            //alert("nao adiciona")
+          }
+      }}
+      onLongPress={()=>{
+        produtossalga.enabled ? produtossalga.enabled=false: produtossalga.enabled=true
+
+        // preciso atualizar a lista pra mostrar a cor atualizada
+        this.setState({
+          depositoDataSource: ds.cloneWithRows(produtos)
+        });
+      }}
+      
+      
+      >
         <Text style={{ fontSize: 15, color: 'white' ,
       textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: {width: 1, height: 1},
@@ -354,81 +370,6 @@ class ProdutosScreen extends React.Component{
     textShadowRadius: 1}}>{Numeral(parseFloat(produtossalga.preco)).format("$ 0.00")}</Text>
       </TouchableOpacity>
     )
-  }
-  bebidasRenderRow(produtosbebidas) {
-    if(produtosbebidas.categoria=="Bebidas"){
-    return(
-      <TouchableOpacity style={styles.botaoProduto}
-        onPress={()=>{
-          quantidadene=Math.floor(0.3/0.15)
-          //alert(quantidadene)
-        this.adicionarCart(produtosbebidas)
-      }}>
-        <Text style={{ fontSize: 15, color: 'black' }}>{produtosbebidas.nome}</Text>
-      </TouchableOpacity>
-    )}else{
-      return null;
-    }
-  }
-  docesRenderRow(produtosDoces) {
-    if(produtosDoces.categoria=="Doces"){
-    return(
-      <TouchableOpacity style={styles.botaoProduto}
-        onPress={()=>{
-          quantidadene=Math.floor(0.3/0.15)
-          //alert(quantidadene)
-        this.adicionarCart(produtosDoces)
-      }}>
-        <Text style={{ fontSize: 15, color: 'black' }}>{produtosDoces.nome}</Text>
-      </TouchableOpacity>
-    )}else{
-      return null;
-    }
-  }
-  biscoitosRenderRow(produtosBiscoitos) {
-    if(produtosBiscoitos.categoria=="Biscoitos"){
-    return(
-      <TouchableOpacity style={styles.botaoProduto}
-        onPress={()=>{
-          quantidadene=Math.floor(0.3/0.15)
-          //alert(quantidadene)
-        this.adicionarCart(produtosBiscoitos)
-      }}>
-        <Text style={{ fontSize: 15, color: 'black' }}>{produtosBiscoitos.nome}</Text>
-      </TouchableOpacity>
-    )}else{
-      return null;
-    }
-  }
-  chocolatesRenderRow(produtos) {
-    if(produtos.categoria=="Chocolates"){
-    return(
-      <TouchableOpacity style={styles.botaoProduto}
-        onPress={()=>{
-          quantidadene=Math.floor(0.3/0.15)
-          //alert(quantidadene)
-        this.adicionarCart(produtos)
-      }}>
-        <Text style={{ fontSize: 15, color: 'black' }}>{produtos.nome}</Text>
-      </TouchableOpacity>
-    )}else{
-      return null;
-    }
-  }
-  balasRenderRow(produtos) {
-    if(produtos.categoria=="Balas"){
-    return(
-      <TouchableOpacity style={styles.botaoProduto}
-        onPress={()=>{
-          quantidadene=Math.floor(0.3/0.15)
-          //alert(quantidadene)
-        this.adicionarCart(produtos)
-      }}>
-        <Text style={{ fontSize: 15, color: 'black' }}>{produtos.nome}</Text>
-      </TouchableOpacity>
-    )}else{
-      return null;
-    }
   }
   cartRenderRow(caart) {
     return(
@@ -1119,7 +1060,19 @@ const styles = StyleSheet.create({
     borderRadius:5,
     color:"white"
     },
-
+botaoProdutoDesabilitado:{
+    backgroundColor:"grey",
+    width:120,
+    height: 80,
+    //borderWidth: 1,
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 20,
+    justifyContent: "flex-end",
+    alignItems: 'center',
+    borderRadius:5,
+    color:"white"
+    },
   containerProdutos2:{
     alignItems: 'center',
     width:"35%",
