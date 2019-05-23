@@ -353,7 +353,12 @@ class ProdutosScreen extends React.Component{
 
         // preciso atualizar a lista pra mostrar a cor atualizada
         this.setState({
-          depositoDataSource: ds.cloneWithRows(produtos)
+          depositoDataSource: ds.cloneWithRows(produtos),
+          balasDataSource: ds.cloneWithRows(produtosBalas),
+          docesDataSource: ds.cloneWithRows(produtosDoces),
+          chocolatesDataSource: ds.cloneWithRows(produtosChocolates),
+          bebidasDataSource: ds.cloneWithRows(produtosBebidas),
+          biscoitosDataSource: ds.cloneWithRows(produtosBiscoitos),
         });
       }}
       
@@ -1071,7 +1076,8 @@ botaoProdutoDesabilitado:{
     justifyContent: "flex-end",
     alignItems: 'center',
     borderRadius:5,
-    color:"white"
+    color:"white",
+    opacity: 0.4,
     },
   containerProdutos2:{
     alignItems: 'center',
