@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity , Image,StatusBar,ListView,Scro
 import {createStackNavigator, createAppContainer, HeaderStyleInterpolator} from'react-navigation';
 console.disableYellowBox = true;
 import Orientation from 'react-native-orientation';
-
+import SQLite from 'react-native-sqlite-storage';
 import "numeral/locales/pt-br";
 const Numeral = require('numeral');
 Numeral.locale('pt-br');
@@ -22,7 +22,7 @@ const produtos =[{id: 35, nome: 'Cheeseburguer', categoria: 'Salgados', preco: '
 {id: 36, nome: 'Hamburguer', categoria: 'Salgados', preco: '5', enabled:true},
 {id: 37, nome: 'Mini pizza', categoria: 'Salgados', preco: '5', enabled:true},
 {id: 38, nome: 'Pão de queijo', categoria: 'Salgados', preco: '2.5', enabled:true},
-{id: 39, nome: 'Pipoca Salgada', categoria: 'Salgados', preco: '2.5', enabled:true},
+{id: 39, nome: 'Pipoca Salgada', categoria: 'Salgados', preco: '3', enabled:true},
 {id: 40, nome: 'Queijo quente', categoria: 'Salgados', preco: '5', enabled:true},
 {id: 41, nome: 'Salgados', categoria: 'Salgados', preco: '4.5', enabled:true},
 ]
@@ -106,6 +106,13 @@ var fichas=[
 var textFichas=''
 var fichasToBuy=[]
 
+
+
+//var SQLite = require('react-native-sqlite-storage')
+var db = SQLite.openDatabase({name: 'test.db', createFromLocation:'~cantinafacil.db'})
+
+
+
 valorFichas=0;
 class HomeScreen extends React.Component{
 
@@ -129,7 +136,7 @@ class HomeScreen extends React.Component{
           </Image>
           <TouchableOpacity  style={styles.botaoHome}
             onPress={()=>this.props.navigation.navigate('Produtos')}
-          ><Text style={styles.botaoHomeText}>INICIAR</Text></TouchableOpacity >
+          ><Text style={styles.botaoHomeText}>VENDER</Text></TouchableOpacity >
           <TouchableOpacity  style={styles.botaoHome}
             onPress={()=>this.props.navigation.navigate('Historico')}
           ><Text style={styles.botaoHomeText}>HISTÓRICO</Text></TouchableOpacity >
@@ -904,6 +911,23 @@ calcularTroco(valorPago){
 }
 
 class HistoricoScreen extends React.Component{
+  constructor(props){
+    super(props);
+    this.state ={
+      idcompra: '',
+    };
+    db.transaction((tx) => {
+      tx.executeSql('SELECT * FROM vendas', [], (tx, results) => {
+          var len = results.rows.length;
+          if(len>0){
+            var row =results.rows.item(0);
+            this.setState({idcompra:row.id})
+          }
+
+    
+        });
+    });
+  }
 
   static navigationOptions={
     header: null
@@ -912,7 +936,7 @@ class HistoricoScreen extends React.Component{
   render() {
     return (
       <View style={styles.containerHome}>
-          <Text>Produtos</Text>
+          <Text>{'id da compra é: '+this.state.idcompra}</Text>
           <TouchableOpacity  title="Voltar"
           onPress={()=>{
             this.zerarTudo()
@@ -926,13 +950,13 @@ class HistoricoScreen extends React.Component{
 const AppNavigator = createStackNavigator({
   
   
+  Home:{
+    screen: HomeScreen
+  },
   Produtos:{
     screen: ProdutosScreen
   },Troco:{
     screen: TrocoScreen
-  },
-  Home:{
-    screen: HomeScreen
   },
   Historico:{
     screen: HistoricoScreen
@@ -963,14 +987,14 @@ const styles = StyleSheet.create({
     height: 44,
   },
   logoHome:{
-    width:480,
-    height: 186.54,
+    width:308.78,
+    height: 120,
     marginTop:20
   },
   botaoHome:{
     width:300,
     height:65,
-    marginTop:80,
+    marginTop:40,
     backgroundColor: "green",
     alignItems: 'center',
     justifyContent: 'center',
