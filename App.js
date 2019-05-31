@@ -4,18 +4,19 @@ import {createStackNavigator, createAppContainer, HeaderStyleInterpolator} from'
 console.disableYellowBox = true;
 import Orientation from 'react-native-orientation';
 import SQLite from 'react-native-sqlite-storage';
+import Timeline from 'react-native-timeline-listview'
 import "numeral/locales/pt-br";
 const Numeral = require('numeral');
 Numeral.locale('pt-br');
 import {
   HideNavigationBar,
-  ShowNavigationBar,
+  ShowNavigationBar
 } from 'react-native-navigation-bar-color';
 
 import Accordion from 'react-native-collapsible/Accordion';
 import Collapsible from 'react-native-collapsible';
 
-import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+import { gestureHandlerRootHOC, FlatList } from 'react-native-gesture-handler';
 import { whileStatement } from '@babel/types';
 
 const produtos =[{id: 35, nome: 'Cheeseburguer', categoria: 'Salgados', preco: '6', enabled:true},
@@ -71,7 +72,6 @@ function roundN(num,n){
   return parseFloat(Math.round(num * Math.pow(10, n)) /Math.pow(10,n)).toFixed(n);
 }
 
-
 var cart=[];
 var totalBruto=0;
 var fichas=[
@@ -109,7 +109,7 @@ var fichasToBuy=[]
 
 
 //var SQLite = require('react-native-sqlite-storage')
-var db = SQLite.openDatabase({name: 'test.db', createFromLocation:'~cantinafacil.db'})
+var db = SQLite.openDatabase({name: 'teste01', createFromLocation:'~cantinafacil.db'})
 
 
 
@@ -123,6 +123,13 @@ class HomeScreen extends React.Component{
   }
 
   componentDidMount() {
+    /*
+    db.transaction((tx)=>{
+      tx.executeSql('delete from vendas')
+      tx.executeSql('delete from vendas_fichas')
+      tx.executeSql('delete from vendas_produtos')
+    })*/
+    
     StatusBar.setHidden(true);
     //HideNavigationBar();
     Orientation.lockToLandscape();
@@ -150,6 +157,9 @@ class HomeScreen extends React.Component{
 // mover pra fora da pagina e substituir o ds
 var ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 fichasToBuy=[];
+
+
+
 class ProdutosScreen extends React.Component{
   constructor(props) {
     super(props);
@@ -604,8 +614,112 @@ class TrocoScreen extends React.Component{
       ultimoSomado:0,
       troco:0,
       fichasDataSource: ds.cloneWithRows(fichasToBuy),
+      idVendaNova:""
     }
 }
+
+verificarUltimaVenda(){
+  db.transaction((tx) => {
+    tx.executeSql('select id from vendas order by id desc limit 1',[],(tx, results) => {
+      results.rows.item(0) ? this.setState({idVendaNova:"VND"+Numeral(parseInt(results.rows.item(0).id.substr(3,4))+1).format("000")})
+      : this.setState({idVendaNova:"VND"+Numeral(1).format("000")})
+      /*results.rows.item ? this.setState({idVendaNova:"VND"+Numeral(1).format("000")})
+      : this.setState({idVendaNova:"VND"+Numeral(parseInt(results.rows.item(0).id.substr(3,4))+1).format("000")})
+    */
+    });
+  });
+}
+
+adicionarComparBD(){
+  //="VND"+Numeral(this.state.idVendaNova).format("000")
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    var hours = new Date().getHours(); //Current Hours
+    var min = new Date().getMinutes(); //Current Minutes
+    var sec = new Date().getSeconds(); //Current Seconds
+  
+    
+
+  trocoInternoBD=this.state.totalCalculadora-totalBruto;
+  cinza=0;
+  laranja=0;
+  ciano=0;
+  amarelo=0;
+  azul=0;
+  verde=0;
+  
+  for(i=0;i<fichasToBuy.length;i++){
+    if(fichasToBuy[i].cor=="Amarelo"){
+       amarelo=fichasToBuy[i].qntd;
+    }else if(fichasToBuy[i].cor=="Verde"){
+      verde=fichasToBuy[i].qntd;
+    }else if(fichasToBuy[i].cor=="Ciano"){
+      ciano=fichasToBuy[i].qntd;
+    }else if(fichasToBuy[i].cor=="Laranja"){
+      laranja=fichasToBuy[i].qntd;
+    }else if(fichasToBuy[i].cor=="Azul"){
+      azul=fichasToBuy[i].qntd;
+    }else{
+      cinza=fichasToBuy[i].qntd;
+    }
+  }
+  
+  console.log('INSERT INTO vendas (id, data, total, pago, troco) VALUES ("'+this.state.idVendaNova
+  +'","'+date + '/' + month + '/' + year +'-'+ hours + ':' + min + ':' + sec
+  +'","'+totalBruto
+  +'","'+this.state.totalCalculadora
+  +'","'+trocoInternoBD
+  +'");')
+  console.log('INSERT INTO vendas_fichas (cinza, laranja, amarelo, azul, ciano, verde, id_venda) VALUES ("'+cinza
+  +'","'+laranja
+  +'","'+amarelo
+  +'","'+azul
+  +'","'+ciano
+  +'","'+verde
+  +'","'+this.state.idVendaNova
+  +'");');
+  
+  db.transaction((tx) => {
+    tx.executeSql('INSERT INTO vendas (id, data, total, pago, troco) VALUES ("'+this.state.idVendaNova
+    +'","'+date + '/' + month + '/' + year +'-'+ hours + ':' + min + ':' + sec
+    +'","'+totalBruto
+    +'","'+this.state.totalCalculadora
+    +'","'+trocoInternoBD
+    +'");');
+    //console.log("sql vendas")
+
+    tx.executeSql('INSERT INTO vendas_fichas (cinza, laranja, amarelo, azul, ciano, verde, id_venda) VALUES ("'+cinza
+    +'","'+laranja
+    +'","'+amarelo
+    +'","'+azul
+    +'","'+ciano
+    +'","'+verde
+    +'","'+this.state.idVendaNova
+    +'");');
+    //console.log("sql fichas")
+  });
+  
+  for(y=0;y<cart.length;y++){
+    idproduto = cart[y].id
+    nome = cart[y].nome
+    quantidade = cart[y].qntd
+    //console.log("sqllaço")
+      db.transaction((tx) => {
+
+        tx.executeSql('INSERT INTO vendas_produtos (produto_id, nome_produto, quantidade, venda_id) VALUES ("'+
+        idproduto+'","'+nome+'","'+quantidade+'","'+this.state.idVendaNova+'");');
+        //console.log("sqllaço")
+        console.log('INSERT INTO vendas_produtos (produto_id, nome_produto, quantidade, venda_id) VALUES ("'+
+    idproduto+'","'+nome+'","'+quantidade+'","'+this.state.idVendaNova+'");');
+
+
+
+    
+      })
+  }
+}
+
 calcularFichas(preBruto){
   //Fazendo as fichas
   valorAtual=preBruto;
@@ -819,6 +933,10 @@ calcularTroco(valorPago){
     this.calcularTroco(totalCalculadoraAtual)
   }
 
+  componentDidMount(){
+    this.verificarUltimaVenda();
+  }
+
   render() {
     return (
       <View style={styles.containerProdutos}>
@@ -897,8 +1015,12 @@ calcularTroco(valorPago){
             onPress={()=>{this.props.navigation.goBack()}}
           ><Text style={{color: "black"}}>VOLTAR</Text></TouchableOpacity >
             <TouchableOpacity style={styles.botaoFinalizar} 
-            onPress={()=>{this.zerarTudo(), 
-              this.props.navigation.goBack()}}
+            onPress={()=>{
+              this.adicionarComparBD(),
+              this.zerarTudo(), 
+              this.props.navigation.goBack()
+            
+            }}
           ><Text style={{color: "black"}}>FINALIZAR</Text></TouchableOpacity >
           </View>
         </View>
@@ -914,34 +1036,139 @@ class HistoricoScreen extends React.Component{
   constructor(props){
     super(props);
     this.state ={
-      idcompra: '',
+      colapsadoHistorico: [],
+      dataEstado:[]
     };
-    db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM vendas', [], (tx, results) => {
-          var len = results.rows.length;
-          if(len>0){
-            var row =results.rows.item(0);
-            this.setState({idcompra:row.id})
-          }
+    this.data = []
+    this.data2 = []
+    this.collapsedHistorico=[]
+
+
 
     
+    db.transaction((tx) => {
+      tx.executeSql('Select * from vendas v inner join vendas_fichas f on f.id_venda = v.id', [], (tx, results) => {
+        len = results.rows.length;
+        var row =results.rows.item(0);
+        for(i=0;i<len;i++){
+          this.collapsedHistorico.push({id:i, collapsed:true, venda:results.rows.item(i).id})
+          this.setState({colapsadoHistorico: this.collapsedHistorico})
+          this.data.push({time: i,
+                          title: results.rows.item(i).id+Numeral(i+1).format("000")+" - Total: "+Numeral(results.rows.item(i).pago-results.rows.item(i).troco).format("$ 0.00")+" | Pago: "+Numeral(results.rows.item(i).pago).format("$ 0.00"),
+                          description: "",
+                          fichas:[
+                            {
+                            cor: "Cinza",
+                            qntd:results.rows.item(i).cinza,
+                            valor:4.5},
+                            {
+                            cor:"Laranja",
+                            qntd:results.rows.item(i).laranja,
+                            valor:2.5},
+                            {
+                            cor:"Amarelo",
+                            qntd:results.rows.item(i).amarelo,
+                            valor:1.5},
+                            {
+                            cor:"Azul",
+                            qntd:results.rows.item(i).azul,
+                            valor:1},
+                            {
+                            cor:"Ciano",
+                            qntd:results.rows.item(i).ciano,
+                            valor:0.5},
+                            {
+                            cor:"Verde",
+                            qntd:results.rows.item(i).verde,
+                            valor:0.15}
+                          ]
+                        })
+            this.setState({dataEstado: this.data})
+        }
+      for(y=0;y<len;y++){
+        //console.log(this.state.colapsadoHistorico[0].venda)
+        tx.executeSql('SELECT * FROM vendas_produtos where venda_id= "'+this.state.colapsadoHistorico[y].venda+'"', [], (tx, resultsP) => {
+          var lenProdutos = resultsP.rows.length;
+          SQLprodutosVenda = ""
+          //console.log('SELECT * FROM vendas_produtos where venda_id= "'+this.state.colapsadoHistorico[0].venda+'"')
+          //console.log(lenProdutos)
+           for(z=0;z<lenProdutos;z++){
+            SQLprodutosVenda=SQLprodutosVenda+resultsP.rows.item(z).quantidade+"X - "+resultsP.rows.item(z).nome_produto+"\n"
+            //console.log(resultsP.rows.item(z).nome_produto)
+          }this.data2.push({produtosVenda: SQLprodutosVenda})
         });
-    });
+      }
+      });
+  });
+
   }
 
   static navigationOptions={
     header: null
   }
+  componentDidMount(){
+/*
+    db.transaction((tx) => {
+      tx.executeSql('INSERT INTO vendas_fichas (cinza, laranja, amarelo,azul,ciano,verde,id_venda) VALUES ("0","0","0","1","0","4","VND001")');
+      tx.executeSql('INSERT INTO vendas_fichas (cinza, laranja, amarelo,azul,ciano,verde,id_venda) VALUES ("1","2","0","2","0","0","VND002")');
+      tx.executeSql('INSERT INTO vendas_fichas (cinza, laranja, amarelo,azul,ciano,verde,id_venda) VALUES ("0","2","0","1","0","3","VND003")');
+      
+    });*/
+/*
+    db.transaction((tx) => {
+      tx.executeSql('INSERT INTO vendas_produtos (produto_id, quantidade, venda_id) VALUES ("32","2","VND001");');
+      
+      tx.executeSql('INSERT INTO vendas_produtos (produto_id, quantidade, venda_id) VALUES ("5","1","VND001");');
+      tx.executeSql('INSERT INTO vendas_produtos (produto_id, quantidade, venda_id) VALUES ("12","1","VND001");');
+      tx.executeSql('INSERT INTO vendas_produtos (produto_id, quantidade, venda_id) VALUES ("43","1","VND002");');
+      
+      tx.executeSql('INSERT INTO vendas_produtos (produto_id, quantidade, venda_id) VALUES ("10","1","VND003");');
+      tx.executeSql('INSERT INTO vendas_produtos (produto_id, quantidade, venda_id) VALUES ("8","3","VND003");');
+  
+    });*/
+    StatusBar.setHidden(false);
+    StatusBar.setBackgroundColor("#f2f2f2");
+    StatusBar.setBarStyle("dark-content");
+    /*
+    
+    <FlatList
+      data={[{}]}
+      renderItem={({item}) => <Text>oi</Text>}
+      />
+      
+      
+      */
+  }
 
   render() {
     return (
-      <View style={styles.containerHome}>
-          <Text>{'id da compra é: '+this.state.idcompra}</Text>
-          <TouchableOpacity  title="Voltar"
-          onPress={()=>{
-            this.zerarTudo()
-          }}
-          ></TouchableOpacity >
+      <View style={styles.containerHomeHistorico}>
+         <View style={{
+            width:500,
+            height:20,
+            position: "relative",
+            left:0}}>
+              <View style={{
+            backgroundColor:"#007AFF",
+            padding: 3,
+            //alignItems: 'center',
+            justifyContent: 'center',
+            width:80,
+            height:20}}>
+            <Text style={{
+            color:"white",
+            fontWeight:"bold",}}
+            >D/A/TAA</Text></View>
+            </View>
+            <Timeline
+          showTime={false}
+          style={{width:500,}}
+          data={this.data}
+          innerCircle={'dot'}
+          datahistorico={this.collapsedHistorico}
+          datinha2={this.data2}
+        />
+        
       </View>
     );
   }
@@ -950,12 +1177,14 @@ class HistoricoScreen extends React.Component{
 const AppNavigator = createStackNavigator({
   
   
+  
   Home:{
     screen: HomeScreen
   },
   Produtos:{
     screen: ProdutosScreen
-  },Troco:{
+  },
+  Troco:{
     screen: TrocoScreen
   },
   Historico:{
@@ -971,6 +1200,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'white',
+  },
+  containerHomeHistorico: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    backgroundColor: '#f2f2f2',
   },
   sectionHeader: {
     paddingTop: 2,
