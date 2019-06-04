@@ -6,6 +6,10 @@ import Orientation from 'react-native-orientation';
 import SQLite from 'react-native-sqlite-storage';
 import Timeline from 'react-native-timeline-listview'
 import "numeral/locales/pt-br";
+
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+
+
 const Numeral = require('numeral');
 Numeral.locale('pt-br');
 import {
@@ -145,7 +149,7 @@ class HomeScreen extends React.Component{
             onPress={()=>this.props.navigation.navigate('Produtos')}
           ><Text style={styles.botaoHomeText}>VENDER</Text></TouchableOpacity >
           <TouchableOpacity  style={styles.botaoHome}
-            onPress={()=>this.props.navigation.navigate('Historico')}
+            onPress={()=>this.props.navigation.navigate('Calendario')}
           ><Text style={styles.botaoHomeText}>HISTÓRICO</Text></TouchableOpacity >
       </View>
     );
@@ -1053,6 +1057,85 @@ calcularTroco(valorPago){
     );
   }
 }
+class CalendarioScreen extends React.Component{
+  
+  static navigationOptions={
+    header: null
+  }
+  constructor(props) {
+    super(props);
+    this.state = {
+      //defauilt value of the date time
+      date: '',
+    };
+  }
+  componentDidMount() {
+    Orientation.lockToPortrait();
+    var that = this;
+    var date = new Date().getDate()-1; //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    var hours = new Date().getHours(); //Current Hours
+    var min = new Date().getMinutes(); //Current Minutes
+    var sec = new Date().getSeconds(); //Current Seconds
+    that.setState({
+      //Setting the value of the date time
+      date:
+      year + '-' + month + '-' + date,
+    });
+  }
+  render(){
+    return (
+      <View><Text>{}</Text>
+        <CalendarList
+  
+        // Enable horizontal scrolling, default = false
+  horizontal={true}
+  // Enable paging on horizontal, default = false
+  pagingEnabled={true}
+  // Set custom calendarWidth.
+  calendarWidth={500}
+  // Initially visible month. Default = Date()
+  current={Date()}
+  // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
+  //minDate={'2012-05-10'}
+  // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+  maxDate={this.state.date}
+  // Handler which gets executed on day press. Default = undefined
+  onDayPress={(day) => {console.log('selected day', day)}}
+
+  onDayPress={(dateString) => {this.props.navigation.navigate('Historico',{parametroData: dateString})}}
+
+  // Handler which gets executed on day long press. Default = undefined
+  onDayLongPress={(day) => {console.log('selected day', day)}}
+  // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
+  monthFormat={'MMMM - yyyy'}
+  // Handler which gets executed when visible month changes in calendar. Default = undefined
+  onMonthChange={(month) => {console.log('month changed', month)}}
+  // Hide month navigation arrows. Default = false
+  //hideArrows={true}
+  // Replace default arrows with custom ones (direction can be 'left' or 'right')
+  renderArrow={(direction) => (direction=="left" ? <Text>{"<"}</Text> : <Text>{">"}</Text>)}
+  // Do not show days of other months in month page. Default = false
+  hideExtraDays={false}
+  // If hideArrows=false and hideExtraDays=false do not switch month when tapping on greyed out
+  // day from another month that is visible in calendar page. Default = false
+  disableMonthChange={true}
+  // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
+  firstDay={1}
+  // Hide day names. Default = false
+  hideDayNames={false}
+  // Show week numbers to the left. Default = false
+  showWeekNumbers={true}
+  // Handler which gets executed when press arrow icon left. It receive a callback can go back month
+  onPressArrowLeft={substractMonth => substractMonth()}
+  // Handler which gets executed when press arrow icon left. It receive a callback can go next month
+  onPressArrowRight={addMonth => addMonth()}
+/>
+      </View>
+    )
+  }
+}
 
 class HistoricoScreen extends React.Component{
   constructor(props){
@@ -1069,7 +1152,7 @@ class HistoricoScreen extends React.Component{
 
     
     db.transaction((tx) => {
-      tx.executeSql('Select * from vendas v inner join vendas_fichas f on f.id_venda = v.id', [], (tx, results) => {
+      tx.executeSql('Select * from vendas v inner join vendas_fichas f on f.id_venda = v.id where substr(data,1,8)="'+this.props.navigation.state.params.parametroData.day+'/'+this.props.navigation.state.params.parametroData.month+'/'+this.props.navigation.state.params.parametroData.year+'"', [], (tx, results) => {
         len = results.rows.length;
         var row =results.rows.item(0);
         for(i=0;i<len;i++){
@@ -1180,7 +1263,7 @@ class HistoricoScreen extends React.Component{
             <Text style={{
             color:"white",
             fontWeight:"bold",}}
-            >D/A/TAA</Text></View>
+            >{this.props.navigation.state.params.parametroData.day+'/'+this.props.navigation.state.params.parametroData.month+'/'+this.props.navigation.state.params.parametroData.year}</Text></View>
             </View>
             <Timeline
           showTime={false}
@@ -1199,7 +1282,6 @@ class HistoricoScreen extends React.Component{
 const AppNavigator = createStackNavigator({
   
   
-  
   Home:{
     screen: HomeScreen
   },
@@ -1208,6 +1290,9 @@ const AppNavigator = createStackNavigator({
   },
   Troco:{
     screen: TrocoScreen
+  },
+  Calendario:{
+    screen: CalendarioScreen
   },
   Historico:{
     screen: HistoricoScreen
