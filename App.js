@@ -700,6 +700,28 @@ adicionarComparBD(){
     //console.log("sql fichas")
   });
   
+    
+  var sql=""
+  for(y=0;y<cart.length;y++){
+    idproduto = cart[y].id
+    nome = cart[y].nome
+    quantidade = cart[y].qntd
+
+    sql=sql+"('"+cart[y].id+"', '"+cart[y].nome+"','"+cart[y].qntd+"','"+this.state.idVendaNova+"')"
+    if(y==(cart.length-1)){
+      sql=sql+";"
+    }else{
+      sql=sql+","
+    }
+  }
+  db.transaction((tx) => {
+
+    tx.executeSql("INSERT INTO vendas_produtos ('produto_id', 'nome_produto','quantidade','venda_id') VALUES"+sql);
+    //console.log("sqllaço")
+    console.log("INSERT INTO vendas_produtos ('produto_id', 'nome_produto','quantidade','venda_id') VALUES"+sql);
+    //console.log(sql);
+  })
+  /*
   for(y=0;y<cart.length;y++){
     idproduto = cart[y].id
     nome = cart[y].nome
@@ -717,7 +739,7 @@ adicionarComparBD(){
 
     
       })
-  }
+  }*/
 }
 
 calcularFichas(preBruto){
@@ -1054,7 +1076,7 @@ class HistoricoScreen extends React.Component{
           this.collapsedHistorico.push({id:i, collapsed:true, venda:results.rows.item(i).id})
           this.setState({colapsadoHistorico: this.collapsedHistorico})
           this.data.push({time: i,
-                          title: results.rows.item(i).id+Numeral(i+1).format("000")+" - Total: "+Numeral(results.rows.item(i).pago-results.rows.item(i).troco).format("$ 0.00")+" | Pago: "+Numeral(results.rows.item(i).pago).format("$ 0.00"),
+                          title: Numeral(i+1).format("000")+" - Total: "+Numeral(results.rows.item(i).pago-results.rows.item(i).troco).format("$ 0.00")+" | Pago: "+Numeral(results.rows.item(i).pago).format("$ 0.00"),
                           description: "",
                           fichas:[
                             {
