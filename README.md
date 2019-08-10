@@ -4,7 +4,7 @@ Aplicativo mobile desenvolvido em React native para ser usado no caixa da cantin
 # Printscreen
 
 -> Tela de loading.
-![Tela de loading](natantmartins.github.com/repository/img/image.jpg)
+![Tela de loading](natantmartins.github.com/repository/img/cantina%20facil%20-%20tela%20calculadora.jpg)
 
 -> Tela inicial.
 
