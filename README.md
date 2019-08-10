@@ -15,7 +15,7 @@ Aplicativo mobile desenvolvido em React native para ser usado no caixa da cantin
 ![Tela de vendas](https://github.com/natantmartins/CantinaFacil/blob/master/img/cantina%20facil%20-%20tela%20de%20vendas.jpg)
 
 
--> Tela de troco e finalização da venda.
+-> Tela de troco e finalização da venda. Ao finalizar a venda, ela é adicionada no histórico.
 ![Tela de troco](https://github.com/natantmartins/CantinaFacil/blob/master/img/cantina%20facil%20-%20tela%20calculadora.jpg)
 
 
